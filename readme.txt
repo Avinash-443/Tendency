@@ -70,4 +70,4 @@ Would Add With More Time
 •	JSON schema validation on the request body — reject malformed nodes (e.g., missing id or type fields) with a descriptive error
 •	Export simulation result as JSON — useful for debugging complex workflows
 
-Submitted for Tredence Studio – AI Agents Engineering Internship 2025  ·  Full Stack Engineering (Frontend Track)
+Submitted for Tredence Studio – AI Agents Engineering Internship 2025  -  Full Stack Engineering (Frontend Track)
