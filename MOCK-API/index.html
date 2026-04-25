@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mock API – HR Workflow Designer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f5f7;
+      color: #1e1e1e;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1a1a2e;
+      color: white;
+      padding: 16px 24px;
+    }
+    header h1 { font-size: 18px; font-weight: 600; }
+    header span { font-size: 12px; color: #aaa; }
+
+    .container { max-width: 860px; margin: 32px auto; padding: 0 20px; }
+
+    .section { margin-bottom: 32px; }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #1a1a2e;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .method {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .get  { background: #d1fae5; color: #065f46; }
+    .post { background: #dbeafe; color: #1e3a8a; }
+
+    .card {
+      background: white;
+      border: 1px solid #e2e4e9;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .url-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      background: #f8f9fb;
+      border: 1px solid #e2e4e9;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+
+    p { font-size: 13px; color: #555; margin-bottom: 4px; }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 5px;
+      margin-top: 14px;
+    }
+
+    textarea {
+      width: 100%;
+      font-family: monospace;
+      font-size: 12px;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      background: #fafafa;
+      resize: vertical;
+      line-height: 1.6;
+      outline: none;
+    }
+    textarea:focus { border-color: #4f46e5; }
+
+    button {
+      margin-top: 12px;
+      padding: 9px 20px;
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:hover { background: #2d2d50; }
+    button:disabled { background: #9ca3af; cursor: not-allowed; }
+
+    .loading {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .response-box {
+      display: none;
+      margin-top: 12px;
+      background: #0f172a;
+      color: #86efac;
+      font-family: monospace;
+      font-size: 12px;
+      padding: 14px;
+      border-radius: 6px;
+      white-space: pre-wrap;
+      line-height: 1.7;
+    }
+    .response-box.error { color: #fca5a5; }
+    .response-box.show  { display: block; }
+
+    .status-line {
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .ok  { color: #4ade80; }
+    .bad { color: #f87171; }
+
+    /* Execution log */
+    .exec-log { display: none; margin-top: 16px; }
+    .exec-log label { margin-top: 0; }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid #f1f3f6;
+      font-size: 13px;
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      width: 22px; height: 22px; border-radius: 50%;
+      font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      background: #d1fae5; color: #065f46;
+    }
+    .step-text small {
+      display: block;
+      font-size: 11px;
+      color: #9ca3af;
+      font-family: monospace;
+      margin-top: 1px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>HR Workflow Designer – Mock API</h1>
+  <span>Case Study · Tredence Studio Internship</span>
+</header>
+
+<div class="container">
+
+  <!-- GET /automations -->
+  <div class="section">
+    <div class="section-title">
+      <span class="method get">GET</span> /automations
+    </div>
+    <div class="card">
+      <div class="url-bar">
+        <span class="method get">GET</span>
+        <span>http://localhost:3001/automations</span>
+      </div>
+      <p>Returns available automated actions for the <strong>Automated Step Node</strong>. No body needed.</p>
+      <button onclick="fetchAutomations()" id="btn-get">Send Request</button>
+      <div class="loading" id="load-get">⏳ Fetching...</div>
+      <div class="response-box" id="res-get"></div>
+    </div>
+  </div>
+
+  <!-- POST /simulate -->
+  <div class="section">
+    <div class="section-title">
+      <span class="method post">POST</span> /simulate
+    </div>
+    <div class="card">
+      <div class="url-bar">
+        <span class="method post">POST</span>
+        <span>http://localhost:3001/simulate</span>
+      </div>
+      <p>Accepts the workflow graph and returns a step-by-step execution result. Validates that Start and End nodes exist.</p>
+
+      <label>Request Body (JSON)</label>
+      <textarea id="sim-body" rows="16">{
+  "workflowId": "wf_onboarding_01",
+  "nodes": [
+    { "id": "start-1", "type": "start",     "data": { "title": "Employee Onboarding" } },
+    { "id": "task-1",  "type": "task",      "data": { "title": "Collect Documents", "assignee": "HR Admin" } },
+    { "id": "appr-1",  "type": "approval",  "data": { "title": "Manager Approval", "approverRole": "Manager" } },
+    { "id": "auto-1",  "type": "automated", "data": { "title": "Send Welcome Email", "actionId": "send_email", "params": { "to": "hire@co.com", "subject": "Welcome!" } } },
+    { "id": "end-1",   "type": "end",       "data": { "endMessage": "Onboarding complete" } }
+  ],
+  "edges": [
+    { "id": "e1", "source": "start-1", "target": "task-1"  },
+    { "id": "e2", "source": "task-1",  "target": "appr-1"  },
+    { "id": "e3", "source": "appr-1",  "target": "auto-1"  },
+    { "id": "e4", "source": "auto-1",  "target": "end-1"   }
+  ]
+}</textarea>
+
+      <button onclick="simulate()" id="btn-sim">Send Request</button>
+      <div class="loading" id="load-sim">⏳ Simulating workflow...</div>
+      <div class="response-box" id="res-sim"></div>
+
+      <div class="exec-log" id="exec-log">
+        <label>Step-by-step Execution Log</label>
+        <div id="step-items"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Mock data for GET /automations (as defined in the PDF)
+  const AUTOMATIONS = [
+    { id: "send_email",   label: "Send Email",        params: ["to", "subject"] },
+    { id: "generate_doc", label: "Generate Document", params: ["template", "recipient"] }
+  ];
+
+  function delay(ms) {
+    return new Promise(r => setTimeout(r, ms));
+  }
+
+  // GET /automations
+  async function fetchAutomations() {
+    const btn  = document.getElementById('btn-get');
+    const load = document.getElementById('load-get');
+    const box  = document.getElementById('res-get');
+
+    btn.disabled = true;
+    load.style.display = 'block';
+    box.className = 'response-box';
+
+    await delay(600);
+
+    load.style.display = 'none';
+    btn.disabled = false;
+
+    box.innerHTML =
+      '<div class="status-line ok">200 OK</div>' +
+      JSON.stringify(AUTOMATIONS, null, 2);
+    box.classList.add('show');
+  }
+
+  // POST /simulate
+  async function simulate() {
+    const btn      = document.getElementById('btn-sim');
+    const load     = document.getElementById('load-sim');
+    const box      = document.getElementById('res-sim');
+    const logWrap  = document.getElementById('exec-log');
+    const logItems = document.getElementById('step-items');
+
+    // reset
+    box.className = 'response-box';
+    logWrap.style.display = 'none';
+    logItems.innerHTML = '';
+
+    // parse JSON body
+    let body;
+    try {
+      body = JSON.parse(document.getElementById('sim-body').value);
+    } catch (e) {
+      box.innerHTML = '<div class="status-line bad">JSON Parse Error</div>' + e.message;
+      box.className = 'response-box error show';
+      return;
+    }
+
+    btn.disabled = true;
+    load.style.display = 'block';
+    await delay(800);
+    load.style.display = 'none';
+    btn.disabled = false;
+
+    const nodes = body.nodes || [];
+    const edges = body.edges || [];
+
+    // Validate: must have start and end node
+    const hasStart = nodes.some(n => n.type === 'start');
+    const hasEnd   = nodes.some(n => n.type === 'end');
+
+    if (!hasStart) {
+      const err = { error: "INVALID_WORKFLOW", message: "Workflow must have a Start node", code: 400 };
+      box.innerHTML = '<div class="status-line bad">400 Bad Request</div>' + JSON.stringify(err, null, 2);
+      box.className = 'response-box error show';
+      return;
+    }
+    if (!hasEnd) {
+      const err = { error: "INVALID_WORKFLOW", message: "Workflow must have an End node", code: 400 };
+      box.innerHTML = '<div class="status-line bad">400 Bad Request</div>' + JSON.stringify(err, null, 2);
+      box.className = 'response-box error show';
+      return;
+    }
+
+    // BFS from start node to determine execution order
+    const nodeMap = {};
+    nodes.forEach(n => nodeMap[n.id] = n);
+
+    const adj = {};
+    nodes.forEach(n => adj[n.id] = []);
+    edges.forEach(e => { if (adj[e.source]) adj[e.source].push(e.target); });
+
+    const startNode = nodes.find(n => n.type === 'start');
+    const visited = new Set();
+    const queue = [startNode.id];
+    const order = [];
+
+    while (queue.length) {
+      const id = queue.shift();
+      if (visited.has(id)) continue;
+      visited.add(id);
+      order.push(id);
+      (adj[id] || []).forEach(t => queue.push(t));
+    }
+
+    // Build execution log
+    const stepMessages = {
+      start:     n => `Workflow "${n.data?.title || 'Untitled'}" started`,
+      task:      n => `Task "${n.data?.title}" assigned to ${n.data?.assignee || 'Unassigned'}`,
+      approval:  n => `Approval request sent to ${n.data?.approverRole || 'Manager'}`,
+      automated: n => `Executing action: ${n.data?.actionId || 'unknown action'}`,
+      end:       n => n.data?.endMessage || 'Workflow complete'
+    };
+
+    const executionLog = order.map((id, i) => {
+      const node = nodeMap[id];
+      const getMessage = stepMessages[node?.type];
+      return {
+        step:    i + 1,
+        nodeId:  id,
+        type:    node?.type || 'unknown',
+        status:  'done',
+        message: getMessage ? getMessage(node) : `Processed node ${id}`
+      };
+    });
+
+    const response = {
+      workflowId:   body.workflowId || 'wf_mock_001',
+      status:       'completed',
+      totalSteps:   executionLog.length,
+      executedAt:   new Date().toISOString(),
+      executionLog
+    };
+
+    // Show JSON response
+    box.innerHTML = '<div class="status-line ok">200 OK</div>' + JSON.stringify(response, null, 2);
+    box.classList.add('show');
+
+    // Show visual step log
+    logItems.innerHTML = executionLog.map(s => `
+      <div class="step">
+        <div class="step-num">${s.step}</div>
+        <div class="step-text">
+          ${s.message}
+          <small>${s.nodeId} &middot; type: ${s.type} &middot; status: ${s.status}</small>
+        </div>
+      </div>
+    `).join('');
+    logWrap.style.display = 'block';
+  }
+</script>
+</body>
+</html>
