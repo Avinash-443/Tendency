@@ -1,83 +1,108 @@
-HR Workflow Designer
-Case Study Submission  ·  Tredence Studio Full Stack Engineering Internship 2025
-Architecture
-A single React (Vite) application covering all 5 functional requirements from the case study PDF. Built with clean separation of concerns across 6 folders.
+# 🧩 HR Workflow Designer  
+### Case Study Submission · Tredence Studio Full Stack Engineering Internship 2025
 
-Folder Structure
+---
+
+## 🏗️ Architecture
+
+A single **React (Vite)** application covering all 5 functional requirements from the case study PDF.  
+Built with clean separation of concerns across 6 folders.
+
+---
+
+## 📁 Folder Structure
+
+
 src/
-  types.js          ← single source of truth for all node definitions
-  api/
-    mockApi.js       ← GET /automations + POST /simulate
-  hooks/
-    useWorkflow.js   ← all workflow state (nodes, edges, selected)
-    useSimulate.js   ← simulate API call state
-  nodes/
-    customNodes.jsx  ← 5 custom React Flow node components
-  forms/
-    NodeFormPanel.jsx← routes to correct form + all 5 node forms
-  components/
-    Field.jsx        ← reusable label wrapper
-    KVEditor.jsx     ← reusable key-value editor
-    SimulatePanel.jsx← sandbox modal
-  App.jsx            ← main orchestration layer
+types.js ← single source of truth for all node definitions
+api/
+mockApi.js ← GET /automations + POST /simulate
+hooks/
+useWorkflow.js ← all workflow state (nodes, edges, selected)
+useSimulate.js ← simulate API call state
+nodes/
+customNodes.jsx ← 5 custom React Flow node components
+forms/
+NodeFormPanel.jsx← routes to correct form + all 5 node forms
+components/
+Field.jsx ← reusable label wrapper
+KVEditor.jsx ← reusable key-value editor
+SimulatePanel.jsx← sandbox modal
+App.jsx ← main orchestration layer
 
-Layer Separation
-•	api/ — all API logic isolated. Swap with real fetch() without touching components
-•	hooks/ — all state logic. Components are pure UI, they just call handlers
-•	nodes/ — canvas rendering only, no form or API knowledge
-•	forms/ — form logic only, no canvas knowledge
-•	types.js — add a new node type here; no other file needs structural change
 
-How to Run
+---
+
+## 🧱 Layer Separation
+
+- **api/** — all API logic isolated. Swap with real `fetch()` without touching components  
+- **hooks/** — all state logic. Components are pure UI  
+- **nodes/** — canvas rendering only, no form or API knowledge  
+- **forms/** — form logic only, no canvas knowledge  
+- **types.js** — add a new node type here; no structural change elsewhere  
+
+---
+
+## ⚙️ How to Run
+
+```bash
 npm install
 npm run dev
 
-Open http://localhost:5173
+Open: http://localhost:5173
 
-•	Drag any node type from the left sidebar onto the canvas
-•	Click a node on the canvas to open its edit form on the right panel
-•	Connect nodes by dragging from the bottom handle of one node to the top handle of another
-•	Press the Delete key (with a node selected) or use the Delete Node button in the form panel
-•	Click Test Workflow to open the sandbox modal, then click Run Simulation
+🧪 Usage
+Drag nodes from the left sidebar onto the canvas
+Click a node to open its edit form
+Connect nodes using handles
+Press Delete key or use Delete button
+Click Test Workflow → Run Simulation
+🧠 Design Decisions
+🔹 selectedId pattern
 
-Design Decisions
-selectedId pattern instead of selectedNode state
-Only the node ID is stored in state. The actual node object is derived from the nodes array on every render. This means when a form updates node data, the form panel immediately shows the latest value without any extra sync.
+Stores only node ID instead of full object → avoids duplication and ensures instant updates.
 
-types.js as single source of truth
-NODE_COLORS, NODE_LABELS, NODE_DEFAULTS are all defined once. The sidebar, canvas nodes, and form panel all import from this file. Adding a new node type means touching types.js, adding one form file, and adding one line to FORM_MAP in NodeFormPanel.jsx.
+🔹 types.js as single source
 
-FORM_MAP for extensibility
-NodeFormPanel.jsx has a FORM_MAP object that maps node type strings to form components. This is the only structural change needed to support a new node type. The routing logic itself never changes.
+Defines NODE_COLORS, NODE_LABELS, NODE_DEFAULTS.
+Adding a new node requires minimal changes.
 
-Controlled forms throughout
-Every input uses value + onChange. Node data lives in React Flow state and flows down as props. The canvas and form panel always show the same data.
+🔹 FORM_MAP extensibility
 
-BFS + DFS in simulate
-POST /simulate uses DFS (white/gray/black) for cycle detection and BFS from the Start node for execution order. These are the correct algorithms for directed graphs and are the same logic a real workflow engine would use.
+Maps node types → form components.
+No change needed in routing logic.
 
-Custom hooks for async state
-useSimulate owns loading/result/error state for the simulate API call. This keeps async logic entirely out of SimulatePanel.jsx, which just renders whatever the hook provides.
+🔹 Controlled forms
 
-Completed vs. What I Would Add
-Completed
-•	React Flow canvas with all 5 custom node types
-•	Drag nodes from sidebar onto canvas
-•	Connect nodes with edges, delete nodes/edges
-•	Click node to open edit form — form panel derives live from state
-•	All 5 node forms with required fields (Start, Task, Approval, Automated, End)
-•	Automated Step form fetches GET /automations and renders dynamic param fields
-•	KV editor shared by Start (metadata) and Task (custom fields)
-•	POST /simulate with DFS cycle detection + BFS execution order
-•	Sandbox panel serializes graph, sends to API, shows execution log
-•	Validation before simulate (missing Start/End warning in top bar)
-•	MiniMap, Controls from React Flow
+All inputs use value + onChange → consistent UI state.
 
-Would Add With More Time
-•	Export / Import workflow as JSON file
-•	Visual validation errors shown directly on nodes (red border if misconfigured)
-•	Undo / Redo with useReducer or a history stack
-•	Cycle detection warning shown before simulation, not just inside it
-•	TypeScript interfaces for node data shapes
-•	Unit tests for BFS/DFS logic and KVEditor component
-Tredence Studio · AI Agents Engineering Internship 2025
+🔹 BFS + DFS in simulate
+DFS → cycle detection
+BFS → execution order
+Matches real workflow engine logic.
+🔹 Custom hooks
+useWorkflow → manages nodes & edges
+useSimulate → handles async state
+✅ Completed Features
+React Flow canvas with 5 node types
+Drag, connect, delete nodes
+Dynamic node form panel
+KV editor (shared components)
+Automation step with dynamic API fields
+BFS + DFS simulation engine
+Validation before simulation
+Simulation sandbox panel
+MiniMap & Controls
+🔮 Future Improvements
+Export / Import workflow (JSON)
+Node-level validation UI (red borders)
+Undo / Redo functionality
+Pre-simulation cycle warnings
+TypeScript migration
+Unit tests (BFS/DFS + KVEditor)
+🛠️ Tech Stack
+React (Vite)
+React Flow
+JavaScript (ES6+)
+Custom Hooks
+Mock API
