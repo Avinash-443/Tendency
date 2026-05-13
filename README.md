@@ -1,17 +1,17 @@
-# 🧩 HR Workflow Designer
+# HR Workflow Designer
 
 ### Case Study Submission · Tredence Studio Full Stack Engineering Internship 2025
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 A single **React (Vite)** application covering all 5 functional requirements from the case study PDF.
 Built with clean separation of concerns across 6 folders.
 
 ---
 
-## 📁 Folder Structure
+## Folder Structure
 
 ```
 src/
@@ -34,7 +34,7 @@ src/
 
 ---
 
-## 🧱 Layer Separation
+## Layer Separation
 
 * **api/** — all API logic isolated. Swap with real `fetch()` without touching components
 * **hooks/** — all state logic. Components are pure UI
@@ -44,7 +44,7 @@ src/
 
 ---
 
-## ⚙️ How to Run
+## How to Run
 
 ```bash
 npm install
@@ -55,7 +55,7 @@ Open: http://localhost:5173
 
 ---
 
-## 🧪 Usage
+## Usage
 
 * Drag nodes from the left sidebar onto the canvas
 * Click a node to open its edit form
@@ -65,7 +65,7 @@ Open: http://localhost:5173
 
 ---
 
-## 🧠 Design Decisions
+## Design Decisions
 
 ### 🔹 selectedId pattern
 
@@ -98,7 +98,7 @@ All inputs use `value + onChange` → consistent UI state.
 
 ---
 
-## ✅ Completed Features
+## Completed Features
 
 * React Flow canvas with 5 node types
 * Drag, connect, delete nodes
@@ -112,7 +112,7 @@ All inputs use `value + onChange` → consistent UI state.
 
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 
 * Export / Import workflow (JSON)
 * Node-level validation UI (red borders)
@@ -123,7 +123,7 @@ All inputs use `value + onChange` → consistent UI state.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 * React (Vite)
 * React Flow
@@ -133,7 +133,7 @@ All inputs use `value + onChange` → consistent UI state.
 
 ---
 
-## 📌 Note
+## Note
 
 This project demonstrates:
 
